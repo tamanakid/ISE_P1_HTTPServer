@@ -7,6 +7,9 @@
 
 void hardware_initialize(void);
 
+void leds_initialize(void);
+void adc_initialize(void);
+
 void lcd_initialize(void);
 
 void write_lcd(char lcd_text[2][21]);

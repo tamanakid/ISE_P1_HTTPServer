@@ -8,7 +8,13 @@
 #include "lcd.h"
 
 
-void hardware_initialize() {	
+void hardware_initialize() {
+	leds_initialize();
+	adc_initialize();
+}
+
+
+void leds_initialize(void) {
 	GPIO_SetDir(PORT_LED, PIN_LED0, GPIO_DIR_OUTPUT);
 	GPIO_SetDir(PORT_LED, PIN_LED1, GPIO_DIR_OUTPUT);
 	GPIO_SetDir(PORT_LED, PIN_LED2, GPIO_DIR_OUTPUT);
@@ -16,7 +22,15 @@ void hardware_initialize() {
 }
 
 
-void lcd_initialize() {
+void adc_initialize(void) {
+  LPC_PINCON->PINSEL3 |= (3 << 28); //Select the P1_30 AD0[0] for ADC function
+  LPC_SC->PCONP |= (1 << 12);      // Enable CLOCK for internal ADC controller
+  LPC_ADC->ADCR &= ~(1UL << 0); // Unselect AD0[0]
+  LPC_ADC->ADCR |= (1 << 21); // The A/D converter is operational.
+}
+
+
+void lcd_initialize(void) {
 	init_lcd();
   reset_lcd();
 	/*

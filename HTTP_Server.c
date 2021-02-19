@@ -20,6 +20,8 @@
 #include "HTTP_Server.h"
 #include "lcd.h"
 #include "GPIO_LPC17xx.h"
+#include "PIN_LPC17xx.h"
+#include "LPC17xx.h"
 
 
 // extern GLCD_FONT GLCD_Font_6x8;
@@ -37,6 +39,7 @@ osThreadDef(Display, osPriorityNormal, 1, 0);
 
 /// Read analog inputs
 uint16_t AD_in (uint32_t ch) {
+	/**
   int32_t val = 0;
 
   if (ch == 0) {
@@ -45,6 +48,20 @@ uint16_t AD_in (uint32_t ch) {
     val = ADC_GetValue();
   }
   return (val);
+	*/
+	uint16_t buffer_adc_sensor;
+	static int adc_value;
+	
+	if (ch == 0) {
+		LPC_ADC->ADCR |= 1UL << 4; // Select AD0[4]
+		LPC_ADC->ADCR |= 1UL << 24; // Start conversion now.
+		while((LPC_ADC->ADGDR >> 31) == 0); // Wait until conversion completes
+		buffer_adc_sensor = (LPC_ADC->ADGDR & (0xFFF << 4)) >> 4;
+		LPC_ADC->ADCR &= ~(1UL << 24); //Start conversion clear.
+		adc_value = buffer_adc_sensor; // *mutex* ?
+  }
+	
+	return adc_value;	
 }
 
 /// Read digital inputs
@@ -67,11 +84,11 @@ static void Display (void const *arg) {
 		/** SEPARAR EN DOS CONDICIONES? */
     if (LCDupdate == true) {
       // sprintf (lcd_buf, "%-20s", lcd_text[0]);
-			strcpy(lcd_buf, "                     ");
+			// strcpy(lcd_buf, "                     ");
 			strcpy(lcd_buf, lcd_text[0]);
 			escribe_frase_L1(lcd_buf, 21);
       // sprintf (lcd_buf, "%-20s", lcd_text[1]);
-			strcpy(lcd_buf, "                     ");
+			// strcpy(lcd_buf, "                     ");
 			strcpy(lcd_buf, lcd_text[1]);
 			escribe_frase_L2(lcd_buf, 21);
 			copy_to_lcd();
