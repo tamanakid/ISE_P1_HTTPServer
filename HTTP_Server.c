@@ -6,21 +6,26 @@
  * Purpose: HTTP Server example
  *----------------------------------------------------------------------------*/
 
+#include <string.h>
 #include <stdio.h>
 #include "cmsis_os.h"                   /* CMSIS RTOS definitions             */
 #include "rl_net.h"                     /* Network definitions                */
 
-#include "Board_GLCD.h"
-#include "GLCD_Config.h"
+// #include "Board_GLCD.h"
+// #include "GLCD_Config.h"
 #include "Board_LED.h"
 #include "Board_Buttons.h"
 #include "Board_ADC.h"
 
 #include "HTTP_Server.h"
+#include "lcd.h"
+#include "GPIO_LPC17xx.h"
+#include "PIN_LPC17xx.h"
+#include "LPC17xx.h"
 
 
-extern GLCD_FONT GLCD_Font_6x8;
-extern GLCD_FONT GLCD_Font_16x24;
+// extern GLCD_FONT GLCD_Font_6x8;
+// extern GLCD_FONT GLCD_Font_16x24;
 
 bool LEDrun;
 bool LCDupdate;
@@ -34,6 +39,7 @@ osThreadDef(Display, osPriorityNormal, 1, 0);
 
 /// Read analog inputs
 uint16_t AD_in (uint32_t ch) {
+	/**
   int32_t val = 0;
 
   if (ch == 0) {
@@ -42,22 +48,25 @@ uint16_t AD_in (uint32_t ch) {
     val = ADC_GetValue();
   }
   return (val);
+	*/
+	uint16_t buffer_adc_sensor;
+	static int adc_value;
+	
+	if (ch == 0) {
+		LPC_ADC->ADCR |= 1UL << 4; // Select AD0[4]
+		LPC_ADC->ADCR |= 1UL << 24; // Start conversion now.
+		while((LPC_ADC->ADGDR >> 31) == 0); // Wait until conversion completes
+		buffer_adc_sensor = (LPC_ADC->ADGDR & (0xFFF << 4)) >> 4;
+		LPC_ADC->ADCR &= ~(1UL << 24); //Start conversion clear.
+		adc_value = buffer_adc_sensor; // *mutex* ?
+  }
+	
+	return adc_value;	
 }
 
 /// Read digital inputs
 uint8_t get_button (void) {
   return (Buttons_GetState ());
-}
-
-/// IP address change notification
-void dhcp_client_notify (uint32_t if_num,
-                         dhcpClientOption opt, const uint8_t *val, uint32_t len) {
-  if (opt == dhcpClientIPaddress) {
-    // IP address has changed
-    sprintf (lcd_text[0],"IP address:");
-    sprintf (lcd_text[1],"%s", ip4_ntoa (val));
-    LCDupdate = true;
-  }
 }
 
 /*----------------------------------------------------------------------------
@@ -66,25 +75,24 @@ void dhcp_client_notify (uint32_t if_num,
 static void Display (void const *arg) {
   char lcd_buf[20+1];
 
-  GLCD_Initialize         ();
-  GLCD_SetBackgroundColor (GLCD_COLOR_BLUE);
-  GLCD_SetForegroundColor (GLCD_COLOR_WHITE);
-  GLCD_ClearScreen        ();
-  GLCD_SetFont            (&GLCD_Font_16x24);
-  GLCD_DrawString         (0, 1*24, "       MDK-MW       ");
-  GLCD_DrawString         (0, 2*24, "HTTP Server example ");
-
+	lcd_initialize();
   sprintf (lcd_text[0], "");
-  sprintf (lcd_text[1], "Waiting for DHCP");
-  LCDupdate = true;
+  sprintf (lcd_text[1], "");
+  LCDupdate = false;
 
   while(1) {
+		/** SEPARAR EN DOS CONDICIONES? */
     if (LCDupdate == true) {
-      sprintf (lcd_buf, "%-20s", lcd_text[0]);
-      GLCD_DrawString (0, 5*24, lcd_buf);
-      sprintf (lcd_buf, "%-20s", lcd_text[1]);
-      GLCD_DrawString (0, 6*24, lcd_buf);
-      LCDupdate = false;
+      // sprintf (lcd_buf, "%-20s", lcd_text[0]);
+			// strcpy(lcd_buf, "                     ");
+			strcpy(lcd_buf, lcd_text[0]);
+			escribe_frase_L1(lcd_buf, 21);
+      // sprintf (lcd_buf, "%-20s", lcd_text[1]);
+			// strcpy(lcd_buf, "                     ");
+			strcpy(lcd_buf, lcd_text[1]);
+			escribe_frase_L2(lcd_buf, 21);
+			copy_to_lcd();
+			LCDupdate = false;
     }
     osDelay (250);
   }
@@ -121,7 +129,7 @@ int main (void) {
 	hardware_initialize();
   net_initialize     ();
 
-  osThreadCreate (osThread(BlinkLed), NULL);
+  // osThreadCreate (osThread(BlinkLed), NULL);
   osThreadCreate (osThread(Display), NULL);
 
   while(1) {

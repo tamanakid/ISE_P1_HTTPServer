@@ -16,6 +16,7 @@
 #include "GPIO_LPC17xx.h"
 
 #include "HTTP_Server.h"
+// #include "lcd.h"
 
 
 // http_server.c
