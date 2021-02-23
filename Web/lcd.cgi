@@ -12,9 +12,9 @@ t  <th width=40%>Item</th>
 t  <th width=60%>Setting</th></tr>
 # Here begin data setting which is formatted in HTTP_CGI.C module
 t <tr><td><img src=pabb.gif>Line 1 Text</td>
-c f 1 <td><input type=text name=lcd1 size=20 maxlength=20 value="%s"></td></tr>
+c f 1 <td><input type=text name=lcd1 size=16 maxlength=16 value="%s"></td></tr>
 t <tr><td><img src=pabb.gif>Line 2 Text</TD>
-c f 2 <td><input type=text name=lcd2 size=20 maxlength=20 value="%s"></td></tr>
+c f 2 <td><input type=text name=lcd2 size=16 maxlength=16 value="%s"></td></tr>
 t </font></table>
 # Here begin button definitions
 t <p align=center>
