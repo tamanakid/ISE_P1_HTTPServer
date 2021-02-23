@@ -196,11 +196,20 @@ void escribe_frase_L1(char* frase, int fraseLength) {
 	uint8_t posL1 = 0;
 	uint8_t letra;
 	int ch;
+  bool found_endline = false;
 
   for (ch = 0; ch < fraseLength; ch++) {
 		// letra = space_fill(frase[ch]);
-		// letra = (frase[ch] == 0x00) ? 0x20 : frase[ch];
-		letra = frase[ch];
+		// letra = (frase[ch] == 0x00 || frase[ch] > 0x7F) ? 0x20 : frase[ch];
+    if (found_endline) {
+      letra = 0x20;
+    } else if (frase[ch] < 0x20 || frase[ch] > 0x7F) {
+      letra = 0x20;
+      found_endline = true;
+    } else {
+      letra = frase[ch];
+    }
+		// letra = frase[ch];
 		posL1 = escribe_letra_L1(letra, posL1);
 	}
 }
@@ -211,11 +220,20 @@ void escribe_frase_L2(char* frase, int fraseLength) {
 	uint8_t posL2 = 0;
 	uint8_t letra;
 	int ch;
+  bool found_endline = false;
 
   for (ch = 0; ch < fraseLength; ch++) {
 		// letra = space_fill(frase[ch]);
-		// letra = (frase[ch] == 0x00) ? 0x20 : frase[ch];
-		letra = frase[ch];
+		// letra = (frase[ch] == 0x00 || frase[ch] > 0x7F) ? 0x20 : frase[ch];
+    if (found_endline) {
+      letra = 0x20;
+    } else if (frase[ch] < 0x20 || frase[ch] > 0x7F) {
+      letra = 0x20;
+      found_endline = true;
+    } else {
+      letra = frase[ch];
+    }
+		// letra = frase[ch];
 		posL2 = escribe_letra_L2(letra, posL2);
   }
 }
