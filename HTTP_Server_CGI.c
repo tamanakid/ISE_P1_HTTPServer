@@ -101,7 +101,7 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
   }
 
   P2 = 0;
-  LEDrun = true;
+  // LEDrun = true;
   if (len == 0) {
     // No data or all items (radio, checkbox) are off
     LED_SetOut (P2);
@@ -136,6 +136,9 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       }
       else if (strcmp (var, "led7=on") == 0) {
         P2 |= 0x80;
+      }
+			else if (strncmp (var, "ctrl=Running", 10) == 0) {
+        LEDrun = true;
       }
       else if (strcmp (var, "ctrl=Browser") == 0) {
         LEDrun = false;
@@ -176,6 +179,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
   uint8_t id;
 	uint8_t is_checked;
 	char led_id;
+	char checkbox_text[50];
   static uint32_t adv;
 
   switch (env[0]) {
@@ -243,7 +247,17 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
         is_checked = leds_status.led0;
       }
       */
-      len = sprintf (buf, &env[4], is_checked ? "checked" : "");
+			if (is_checked && LEDrun) {
+				strcpy(checkbox_text, "checked disabled");
+			} else if (!is_checked && LEDrun) {
+				strcpy(checkbox_text, "disabled");
+			} else if (is_checked && !LEDrun) {
+				strcpy(checkbox_text, "checked");
+			} else {
+				strcpy(checkbox_text, "");
+			}
+			len = sprintf (buf, &env[4], &checkbox_text);
+      // len = sprintf (buf, &env[4], is_checked ? "checked" : "");
 			
 			/** function */
 			if (led_id == '3') {

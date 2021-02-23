@@ -8,6 +8,15 @@ t   }
 t  }
 t  document.form1.submit();
 t }
+t function ChangeSelect() {
+t 	// var isBrowserSelected = document.form1.elements[1][0].selected;
+t 	for(i=0;i<document.form1.length;i++) {
+t   	if (document.form1.elements[i].type=="checkbox"){
+t    		document.form1.elements[i].disabled = false;
+t   	}
+t  	}
+t 	document.form1.submit();
+t };
 t </script></head>
 i pg_header.inc
 t <h2 align=center><br>Control LEDs on the board</h2>
@@ -22,9 +31,9 @@ t <tr bgcolor=#aaccff>
 t  <th width=40%>Item</th>
 t  <th width=60%>Setting</th></tr>
 t <td><img src=pabb.gif>LED control:</td>
-t <td><select name="ctrl" onchange="submit();">
+t <td><select name="ctrl" onchange="ChangeSelect();">
 c b c <option %s>Browser</option><option %s>Running Lights</option></select></td></tr>
-t <tr><td><img src=pabb.gif>LED diode ports [7..0]:</td>
+t <tr><td><img src=pabb.gif>LED diode ports [0-3]:</td>
 t <td><table><tr valign="middle">
 # Here begin the 'checkbox' definitions
 c b 0 <td><input type=checkbox name=led0 OnClick="submit();" %s>0</td>
