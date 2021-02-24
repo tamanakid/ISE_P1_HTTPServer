@@ -164,6 +164,10 @@ uint8_t escribe_letra_L1(uint8_t letter, uint8_t posL1) {
 		valor1 = Arial12x12[comienzo + i*2 + 1];
 		valor2 = Arial12x12[comienzo + i*2 + 2];
 		
+		if (i + posL1 > 127) {
+			break;
+		}
+		
 		buffer[i + posL1] = valor1;
 		buffer[i + 128 + posL1] = valor2;
 	}
@@ -184,6 +188,10 @@ uint8_t escribe_letra_L2(uint8_t letter, uint8_t posL2) {
     valor1 = Arial12x12[comienzo + i*2 + 1];
     valor2 = Arial12x12[comienzo + i*2 + 2];
     
+		if (i + posL2 > 127) {
+			break;
+		}
+
     buffer[256 + i + posL2] = valor1;
     buffer[384 + i + posL2] = valor2;
   }

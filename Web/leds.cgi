@@ -16,7 +16,7 @@ t    		document.form1.elements[i].disabled = false;
 t   	}
 t  	}
 t 	document.form1.submit();
-t };
+t }
 t </script></head>
 i pg_header.inc
 t <h2 align=center><br>Control LEDs on the board</h2>

@@ -29,7 +29,7 @@
 
 bool LEDrun = true;
 bool LCDupdate;
-char lcd_text[2][16+1];
+char lcd_text[2][20+1];
 
 
 ledsStatusOverride override_status; //  = { .led3 = 0, .led2 = 0, .led1 = 0, .led0 = 0, .override = 0 };
@@ -77,7 +77,7 @@ uint8_t get_button (void) {
   Thread 'Display': LCD display handler
  *---------------------------------------------------------------------------*/
 static void Display (void const *arg) {
-  char lcd_buf[16+1];
+  char lcd_buf[24+1];
 
 	lcd_initialize();
   sprintf (lcd_text[0], "");
@@ -89,7 +89,6 @@ static void Display (void const *arg) {
     if (LCDupdate == true) {
       // reset_lcd();
       // sprintf (lcd_buf, "%-20s", lcd_text[0]);
-			// strcpy(lcd_buf, "                     ");
 			strcpy(lcd_buf, lcd_text[0]);
 			escribe_frase_L1(lcd_buf, sizeof(lcd_buf));
       // sprintf (lcd_buf, "%-20s", lcd_text[1]);
@@ -97,11 +96,7 @@ static void Display (void const *arg) {
 			strcpy(lcd_buf, lcd_text[1]);
 			escribe_frase_L2(lcd_buf, sizeof(lcd_buf));
 			copy_to_lcd();
-      override_status.override = 1;
-      override_status.led3 = leds_status.led3;
-      override_status.led2 = leds_status.led2;
-      override_status.led1 = leds_status.led1;
-      override_status.led0 = leds_status.led0;
+			strcpy(lcd_buf, "                        ");
 			LCDupdate = false;
     }
     osDelay (250);

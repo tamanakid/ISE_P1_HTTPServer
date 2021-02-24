@@ -37,7 +37,7 @@ extern struct http_cfg  http_config;
 
 extern bool LEDrun;
 extern bool LCDupdate;
-extern char lcd_text[2][16+1];
+extern char lcd_text[2][20+1];
 extern ledsStatusOverride override_status;
 extern ledsStatus leds_status;
 
