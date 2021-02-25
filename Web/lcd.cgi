@@ -19,18 +19,14 @@ t </font></table>
 # Here begin button definitions
 t <p align=center>
 t <script language=JavaScript>
-t var currentValues = {
-t 	lcd1: document.cgi.elements["lcd1"].value,
-t 	lcd2: document.cgi.elements["lcd2"].value
-t };
-t function submitLcd(elementUnchanged) {
-t  document.cgi.elements[elementUnchanged].value = currentValues[elementUnchanged];
+t function clearFields() {
+t  document.cgi.elements["lcd1"].value = "";
+t  document.cgi.elements["lcd2"].value = "";
 t  document.cgi.elements['sbm'].click();
 t }
 t </script>
-t <input type=button value="Line&nbsp;1" onclick="submitLcd('lcd2')" style="margin-right: 1rem;">
-t <input type=button  value="Line&nbsp;2" onclick="submitLcd('lcd1')">
-t <input style="display: none;" type=submit name=set value="Send" id="sbm">
+t <input type=submit name=set value="Send" id="sbm">
+t <input type=button name=set value="Clear fields" id="clear" onclick="clearFields()">
 t </p></form>
 i pg_footer.inc
 . End of script must be closed with period.

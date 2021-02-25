@@ -31,10 +31,6 @@ bool LEDrun = true;
 bool LCDupdate;
 char lcd_text[2][20+1];
 
-
-ledsStatusOverride override_status; //  = { .led3 = 0, .led2 = 0, .led1 = 0, .led0 = 0, .override = 0 };
-ledsStatus leds_status; // { .led3 = 0, .led2 = 0, .led1 = 0, .led0 = 0 };
-
 static void BlinkLed (void const *arg);
 static void Display (void const *arg);
 
@@ -158,15 +154,6 @@ int main (void) {
 	hardware_initialize();
   net_initialize     ();
 
-  override_status.led3 = 0;
-  override_status.led2 = 0;
-  override_status.led1 = 0;
-  override_status.led0 = 0;
-  override_status.override = 0;
-  leds_status.led3 = 0;
-  leds_status.led2 = 0;
-  leds_status.led1 = 0;
-  leds_status.led0 = 0;
   osThreadCreate (osThread(BlinkLed), NULL);
   osThreadCreate (osThread(Display), NULL);
 

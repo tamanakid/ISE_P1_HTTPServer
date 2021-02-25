@@ -211,9 +211,11 @@ void escribe_frase_L1(char* frase, int fraseLength) {
 		// letra = (frase[ch] == 0x00 || frase[ch] > 0x7F) ? 0x20 : frase[ch];
     if (found_endline) {
       letra = 0x20;
-    } else if (frase[ch] < 0x20 || frase[ch] > 0x7F) {
+		} else if (frase[ch] > 0x7F) {
+			letra = 0x7F;
+    } else if (frase[ch] < 0x20) {
       letra = 0x20;
-      found_endline = true;
+      found_endline = (frase[ch] == 0x00);
     } else {
       letra = frase[ch];
     }
@@ -235,9 +237,11 @@ void escribe_frase_L2(char* frase, int fraseLength) {
 		// letra = (frase[ch] == 0x00 || frase[ch] > 0x7F) ? 0x20 : frase[ch];
     if (found_endline) {
       letra = 0x20;
-    } else if (frase[ch] < 0x20 || frase[ch] > 0x7F) {
+    } else if (frase[ch] > 0x7F) {
+			letra = 0x7F;
+    } else if (frase[ch] < 0x20) {
       letra = 0x20;
-      found_endline = true;
+      found_endline = (frase[ch] == 0x00);
     } else {
       letra = frase[ch];
     }

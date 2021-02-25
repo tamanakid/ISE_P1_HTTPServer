@@ -8,25 +8,6 @@
 #define PIN_LED3 23
 
 
-typedef struct {
-  uint8_t led3;
-  uint8_t led2;
-  uint8_t led1;
-  uint8_t led0;
-} ledsStatus;
-
-typedef struct {
-  uint8_t led3;
-  uint8_t led2;
-  uint8_t led1;
-  uint8_t led0;
-  uint8_t override;
-} ledsStatusOverride;
-
-extern ledsStatusOverride override_status;
-extern ledsStatus leds_status;
-
-
 void hardware_initialize(void);
 
 void leds_initialize(void);

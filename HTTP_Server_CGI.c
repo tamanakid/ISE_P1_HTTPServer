@@ -38,8 +38,6 @@ extern struct http_cfg  http_config;
 extern bool LEDrun;
 extern bool LCDupdate;
 extern char lcd_text[2][20+1];
-extern ledsStatusOverride override_status;
-extern ledsStatus leds_status;
 
 // Local variables.
 static uint8_t P2;
@@ -228,25 +226,6 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       led_id = env[2];
 			is_checked = (P2 & id);
       
-      /*
-      if (override_status.override) {
-        override_status.override = 0;
-        leds_status.led3 = override_status.led3;
-        leds_status.led2 = override_status.led2;
-        leds_status.led1 = override_status.led1;
-        leds_status.led0 = override_status.led0;
-      }
-      
-      if (!is_checked && led_id == '3') {
-        is_checked = leds_status.led3;
-      } else if (!is_checked && led_id == '2') {
-        is_checked = leds_status.led2;
-      } else if (!is_checked && led_id == '1') {
-        is_checked = leds_status.led1;
-      } else if (!is_checked && led_id == '0') {
-        is_checked = leds_status.led0;
-      }
-      */
 			if (is_checked && LEDrun) {
 				strcpy(checkbox_text, "checked disabled");
 			} else if (!is_checked && LEDrun) {
@@ -257,20 +236,15 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 				strcpy(checkbox_text, "");
 			}
 			len = sprintf (buf, &env[4], &checkbox_text);
-      // len = sprintf (buf, &env[4], is_checked ? "checked" : "");
 			
 			/** function */
 			if (led_id == '3') {
-        leds_status.led3 = is_checked;
 				GPIO_PinWrite(PORT_LED, PIN_LED3, is_checked);
 			} else if (led_id == '2') {
-        leds_status.led2 = is_checked;
 				GPIO_PinWrite(PORT_LED, PIN_LED2, is_checked);
 			} else if (led_id == '1') {
-        leds_status.led1 = is_checked;
 				GPIO_PinWrite(PORT_LED, PIN_LED1, is_checked);
 			} else if (led_id == '0') {
-        leds_status.led0 = is_checked;
 				GPIO_PinWrite(PORT_LED, PIN_LED0, is_checked);
 			}
 
