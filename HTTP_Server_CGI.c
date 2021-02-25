@@ -9,23 +9,19 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "rl_net.h"
 #include "rl_net_lib.h"
-#include "Board_LED.h"
-
 #include "GPIO_LPC17xx.h"
 
 #include "HTTP_Server.h"
-// #include "lcd.h"
 
 
-// http_server.c
-extern uint16_t AD_in (uint32_t ch);
-extern uint8_t  get_button (void);
 
 // net_sys.c
 extern  LOCALM localm[];
 #define LocM   localm[NETIF_ETH]
+
 
 // Net_Config.c
 extern struct tcp_cfg   tcp_config;
@@ -35,12 +31,15 @@ extern struct http_cfg  http_config;
 #define http_EnAuth     http_config.EnAuth
 #define http_auth_passw http_config.Passw
 
+
 extern bool LEDrun;
 extern bool LCDupdate;
 extern char lcd_text[2][20+1];
 
+
 // Local variables.
 static uint8_t P2;
+
 
 // My structure of CGI status variable.
 typedef struct {
@@ -48,6 +47,7 @@ typedef struct {
   uint16_t unused;
 } MY_BUF;
 #define MYBUF(p)        ((MY_BUF *)p)
+
 
 // Process query string received by GET request.
 void cgi_process_query (const char *qstr) {
@@ -102,7 +102,6 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
   // LEDrun = true;
   if (len == 0) {
     // No data or all items (radio, checkbox) are off
-    LED_SetOut (P2);
     return;
   }
   passw[0] = 1;
@@ -166,13 +165,11 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       }
     }
   } while (data);
-  LED_SetOut (P2);
 }
 
 // Generate dynamic web data from a script line.
 uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi) {
   TCP_INFO *tsoc;
-  const char *lang;
   uint32_t len = 0;
   uint8_t id;
 	uint8_t is_checked;
@@ -180,8 +177,10 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 	char checkbox_text[50];
   static uint32_t adv;
 
+	
   switch (env[0]) {
     // Analyze a 'c' script line starting position 2
+		
     case 'a' :
       // Network parameters from 'network.cgi'
       switch (env[2]) {
@@ -208,6 +207,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       }
       break;
 
+			
     case 'b':
       // LED control from 'led.cgi'
       if (env[2] == 'c') {
@@ -215,7 +215,9 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
         len = sprintf (buf, &env[4], LEDrun ?     ""     : "selected",
                                      LEDrun ? "selected" :    ""     );
         break;
-      }
+      } else if (env[2] == 'o') {
+				len = sprintf (buf, &env[4], LEDrun ? "disabled" : "");
+			}
       // LED CheckBoxes
       id = env[2] - '0';
       if (id > 7) {
@@ -226,6 +228,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       led_id = env[2];
 			is_checked = (P2 & id);
       
+			// Evaluate both 'checked' and 'disabled' attributes
 			if (is_checked && LEDrun) {
 				strcpy(checkbox_text, "checked disabled");
 			} else if (!is_checked && LEDrun) {
@@ -235,22 +238,13 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 			} else {
 				strcpy(checkbox_text, "");
 			}
-			len = sprintf (buf, &env[4], &checkbox_text);
 			
-			/** function */
-			if (led_id == '3') {
-				GPIO_PinWrite(PORT_LED, PIN_LED3, is_checked);
-			} else if (led_id == '2') {
-				GPIO_PinWrite(PORT_LED, PIN_LED2, is_checked);
-			} else if (led_id == '1') {
-				GPIO_PinWrite(PORT_LED, PIN_LED1, is_checked);
-			} else if (led_id == '0') {
-				GPIO_PinWrite(PORT_LED, PIN_LED0, is_checked);
-			}
-
+			leds_browser_set(led_id, is_checked);
+			len = sprintf (buf, &env[4], &checkbox_text);
 			
 			break;
 
+			
     case 'c':
       // TCP status from 'tcp.cgi'
       while ((len + 150) < buflen) {
@@ -285,6 +279,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       }
       break;
 
+			
     case 'd':
       // System password from 'system.cgi'
       switch (env[2]) {
@@ -297,26 +292,6 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       }
       break;
 
-    case 'e':
-      // Browser Language from 'language.cgi'
-      lang = http_server_get_lang ();
-      if      (strncmp (lang, "en", 2) == 0) {
-        lang = "English";
-      }
-      else if (strncmp (lang, "de", 2) == 0) {
-        lang = "German";
-      }
-      else if (strncmp (lang, "fr", 2) == 0) {
-        lang = "French";
-      }
-      else if (strncmp (lang, "sl", 2) == 0) {
-        lang = "Slovene";
-      }
-      else {
-        lang = "Unknown";
-      }
-      len = sprintf (buf, &env[2], lang, http_server_get_lang());
-      break;
 
     case 'f':
       // LCD Module control from 'lcd.cgi'
@@ -330,11 +305,12 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       }
       break;
 
+			
     case 'g':
       // AD Input from 'ad.cgi'
       switch (env[2]) {
         case '1':
-          adv = AD_in (0);
+          adv = adc_read();
           len = sprintf (buf, &env[4], adv);
           break;
         case '2':
@@ -349,15 +325,10 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 
     case 'x':
       // AD Input from 'ad.cgx'
-      adv = AD_in (0);
+      adv = adc_read();
       len = sprintf (buf, &env[1], adv);
       break;
 
-    case 'y':
-      // Button state from 'button.cgx'
-      len = sprintf (buf, "<checkbox><id>button%c</id><on>%s</on></checkbox>",
-                     env[1], (get_button () & (1 << (env[1]-'0'))) ? "true" : "false");
-      break;
   }
   return (len);
 }

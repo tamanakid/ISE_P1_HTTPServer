@@ -453,21 +453,6 @@
               <FilePath>.\Web\ad.cgx</FilePath>
             </File>
             <File>
-              <FileName>buttons.cgi</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\buttons.cgi</FilePath>
-            </File>
-            <File>
-              <FileName>buttons.cgx</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\buttons.cgx</FilePath>
-            </File>
-            <File>
-              <FileName>language.cgi</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\language.cgi</FilePath>
-            </File>
-            <File>
               <FileName>lcd.cgi</FileName>
               <FileType>9</FileType>
               <FilePath>.\Web\lcd.cgi</FilePath>
@@ -996,21 +981,6 @@
               <FileName>ad.cgx</FileName>
               <FileType>9</FileType>
               <FilePath>.\Web\ad.cgx</FilePath>
-            </File>
-            <File>
-              <FileName>buttons.cgi</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\buttons.cgi</FilePath>
-            </File>
-            <File>
-              <FileName>buttons.cgx</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\buttons.cgx</FilePath>
-            </File>
-            <File>
-              <FileName>language.cgi</FileName>
-              <FileType>9</FileType>
-              <FilePath>.\Web\language.cgi</FilePath>
             </File>
             <File>
               <FileName>lcd.cgi</FileName>

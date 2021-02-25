@@ -45,9 +45,10 @@ t <td width="5%"></td>
 c b 3 <td><input type=checkbox name=led3 OnClick="submit();" %s>3</td>
 t </font></table></td></tr>
 t <tr><td><img src=pabb.gif>All LED diodes On or OFF</td>
-t <td><input type=button value="&nbsp;&nbsp;ON&nbsp;&nbsp;&nbsp;" onclick="AllSW(true)">
-t <input type=button value="&nbsp;&nbsp;OFF&nbsp;&nbsp;" onclick="AllSW(false)"></td></tr>
-t </table></form>
+t <td>
+c b o <input %s type=button value="&nbsp;&nbsp;ON&nbsp;&nbsp;&nbsp;" onclick="AllSW(true)">
+c b o <input %s type=button value="&nbsp;&nbsp;OFF&nbsp;&nbsp;" onclick="AllSW(false)">
+t </td></tr></table></form>
 i pg_footer.inc
 . End of script must be closed with period.
 
