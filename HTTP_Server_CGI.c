@@ -34,7 +34,8 @@ extern struct http_cfg  http_config;
 
 extern bool LEDrun;
 extern bool LCDupdate;
-extern char lcd_text[2][20+1];
+extern char lcd_text[2][30+1];
+extern int ntp_seconds;
 
 
 // Local variables.
@@ -176,6 +177,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 	char led_id;
 	char checkbox_text[50];
   static uint32_t adv;
+	static int timestamp;
 
 	
   switch (env[0]) {
@@ -217,6 +219,11 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
         break;
       } else if (env[2] == 'o') {
 				len = sprintf (buf, &env[4], LEDrun ? "disabled" : "");
+				break;
+			} else if (env[2] == 'n') {
+				timestamp = ntp_seconds;
+				len = sprintf (buf, &env[4], timestamp);
+				break;
 			}
       // LED CheckBoxes
       id = env[2] - '0';

@@ -9,7 +9,7 @@
 #include "lcd.h"
 
 
-extern char lcd_text[2][20+1];
+extern char lcd_text[2][30+1];
 
 
 /**
