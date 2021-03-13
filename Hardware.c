@@ -13,6 +13,9 @@
 
 extern char lcd_text[2][30+1];
 
+extern uint8_t leds_status;
+extern bool LED2blink;
+
 
 /**
  * Initializes all 4 LEDs as GPIO elements.
@@ -76,6 +79,63 @@ uint8_t leds_running_set(uint8_t current_led) {
 			return 0;
 	}
 	return ++current_led;
+}
+
+
+
+void leds_blink_led2() {
+	int i;
+	bool led2_on = true;
+
+	GPIO_PinWrite(PORT_LED, PIN_LED3, 0);
+	GPIO_PinWrite(PORT_LED, PIN_LED2, 1);
+	GPIO_PinWrite(PORT_LED, PIN_LED1, 0);
+	GPIO_PinWrite(PORT_LED, PIN_LED0, 0);
+	
+	for (i = 0; i < 5; i++) {
+		led2_on = !led2_on;
+		GPIO_PinWrite(PORT_LED, PIN_LED2, led2_on);
+		osDelay(300);
+	}
+	
+	GPIO_PinWrite(PORT_LED, PIN_LED2, 0);
+}
+
+
+
+void leds_blink_led3() {
+	bool led3_on = true;
+
+	GPIO_PinWrite(PORT_LED, PIN_LED3, 1);
+	GPIO_PinWrite(PORT_LED, PIN_LED2, 0);
+	GPIO_PinWrite(PORT_LED, PIN_LED1, 0);
+	GPIO_PinWrite(PORT_LED, PIN_LED0, 0);
+	
+	do {
+		rtc_get_full_time();
+		led3_on = !led3_on;
+		GPIO_PinWrite(PORT_LED, PIN_LED3, led3_on);
+		osDelay(100);
+	} while (rtc_seconds < 5);
+	
+	GPIO_PinWrite(PORT_LED, PIN_LED3, 0);
+}
+
+
+
+void leds_restore_browser_config() {
+	if (leds_status & 0x08) {
+		GPIO_PinWrite(PORT_LED, PIN_LED3, 1);
+	}
+	if (leds_status & 0x04) {
+		GPIO_PinWrite(PORT_LED, PIN_LED2, 1);
+	}
+	if (leds_status & 0x02) {
+		GPIO_PinWrite(PORT_LED, PIN_LED1, 1);
+	}
+	if (leds_status & 0x01) {
+		GPIO_PinWrite(PORT_LED, PIN_LED0, 1);
+	}
 }
 
 

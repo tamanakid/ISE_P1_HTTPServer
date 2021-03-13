@@ -73,7 +73,11 @@ extern osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp;
 
 extern int init_threads_rtc (void);
 
+extern uint8_t leds_status;
 
+extern void leds_blink_led3(void);
+extern void leds_blink_led2(void);
+extern void leds_restore_browser_config(void);
 
 extern uint32_t  read_time_strings(const char *env, char *buf, char *str);
 

@@ -35,6 +35,7 @@ extern struct http_cfg  http_config;
 
 
 extern bool LEDrun;
+extern bool LED3blink;
 extern bool LCDupdate;
 extern char lcd_text[2][30+1];
 
@@ -44,7 +45,7 @@ extern char str_time_rtc[50];
 
 
 // Local variables.
-static uint8_t P2;
+uint8_t leds_status = 0;
 
 
 // My structure of CGI status variable.
@@ -103,8 +104,10 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
     // Ignore all other codes
     return;
   }
-
-  P2 = 0;
+	
+	if (strncmp (data, "pg=led", 6) == 0) {
+		leds_status = 0;
+	}
   // LEDrun = true;
   if (len == 0) {
     // No data or all items (radio, checkbox) are off
@@ -117,28 +120,16 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
     if (var[0] != 0) {
       // First character is non-null, string exists
       if (strcmp (var, "led0=on") == 0) {
-        P2 |= 0x01;
+        leds_status |= 0x01;
       }
       else if (strcmp (var, "led1=on") == 0) {
-        P2 |= 0x02;
+        leds_status |= 0x02;
       }
       else if (strcmp (var, "led2=on") == 0) {
-        P2 |= 0x04;
+        leds_status |= 0x04;
       }
       else if (strcmp (var, "led3=on") == 0) {
-        P2 |= 0x08;
-      }
-      else if (strcmp (var, "led4=on") == 0) {
-        P2 |= 0x10;
-      }
-      else if (strcmp (var, "led5=on") == 0) {
-        P2 |= 0x20;
-      }
-      else if (strcmp (var, "led6=on") == 0) {
-        P2 |= 0x40;
-      }
-      else if (strcmp (var, "led7=on") == 0) {
-        P2 |= 0x80;
+        leds_status |= 0x08;
       }
 			else if (strncmp (var, "ctrl=Running", 10) == 0) {
         LEDrun = true;
@@ -234,7 +225,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       id = 1 << id;
       
       led_id = env[2];
-			is_checked = (P2 & id);
+			is_checked = (leds_status & id);
       
 			// Evaluate both 'checked' and 'disabled' attributes
 			if (is_checked && LEDrun) {
@@ -247,7 +238,9 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 				strcpy(checkbox_text, "");
 			}
 			
-			leds_browser_set(led_id, is_checked);
+			if (LED3blink != true) {
+				leds_browser_set(led_id, is_checked);
+			}
 			len = sprintf (buf, &env[4], &checkbox_text);
 			
 			break;

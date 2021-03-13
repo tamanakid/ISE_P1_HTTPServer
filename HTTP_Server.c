@@ -27,6 +27,8 @@
 
 
 bool LEDrun = true;
+bool LED2blink = false;
+bool LED3blink = false;
 bool LCDupdate;
 char lcd_text[2][30+1];
 
@@ -84,10 +86,19 @@ static void thread_leds (void const *arg) {
   LEDrun = true;
 	
   while(1) {
-    // Every 100 ms
-    if (LEDrun == true) {
-			current_led = leds_running_set(current_led);
+		if (LED3blink == true) {
+			leds_blink_led3();
+			LED3blink = false;
     }
+		if (LED2blink == true) {
+			leds_blink_led2();
+			LED2blink = false;
+		}
+		if (LEDrun == true) {
+			current_led = leds_running_set(current_led);
+    } else {
+			leds_restore_browser_config();
+		}
     osDelay (100);
   }
 }
@@ -99,6 +110,7 @@ static void thread_leds (void const *arg) {
  */
 void rtc_handle_interrupt() {
 	osSignalSet(id_thread_sntp, 0x02);
+	LED3blink = true;
 	// osSignalSet(id_thread_leds3, 0x01);
 }
 

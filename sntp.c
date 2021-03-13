@@ -9,6 +9,11 @@
 #include "HTTP_Server.h"
 
 
+extern bool LEDrun;
+extern bool LED2blink;
+extern bool LED3blink;
+
+
 
 int ntp_timestamp = 0;
 
@@ -32,7 +37,7 @@ void thread_sntp (void const *argument) {
 
   while (1) {
 		minute_count++;
-		if (minute_count > 3) {
+		if (minute_count >= 3) {
 			request_status = sntp_get_time (&ntp_server_1[0], sntp_response_callback);
 			minute_count = 0;
 		}		
@@ -41,12 +46,13 @@ void thread_sntp (void const *argument) {
 }
 
 
-static void sntp_response_callback (uint32_t timestamp) {
+static void sntp_response_callback (uint32_t timestamp) {	
   if (timestamp == 0) {
     ntp_timestamp = 0;
 
-  } else {		
-		timestamp_tt = timestamp;
+  } else {
+		// Consider GMT+1
+		timestamp_tt = timestamp + 3600;
 		(void) localtime_r(&timestamp_tt, &timestamp_tm);
 		
 		strftime(str_time_sntp, sizeof(str_time_sntp), "%Y/%m/%d - %H:%M:%S\n", &timestamp_tm);
@@ -61,6 +67,8 @@ static void sntp_response_callback (uint32_t timestamp) {
 		);
 		
     ntp_timestamp = (int) timestamp;
+		
+		LED2blink = true;
   }
 }
 
