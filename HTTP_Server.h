@@ -11,6 +11,7 @@
 
 extern char lcd_text[2][30+1];
 
+
 /**
  * Functions defined in Hardware.c
  */
@@ -28,6 +29,14 @@ uint16_t adc_read(void);
 void lcd_initialize(void);
 void lcd_write(void);
 
+/* Joystick-related */
+void joystick_initialize(void);
+
+
+/**
+ * Functions defined in sntp.c
+ */
+static void sntp_response_callback (uint32_t timestamp);
 
 
 
@@ -58,15 +67,20 @@ void lcd_write(void);
 //#define RTC_CIIR_CONFIG   0x000000CF
 #define RTC_CIIR_CONFIG   	0x00000002
 
-extern int ntp_seconds;
 
-extern osThreadId id_thread_lcd, id_thread_led3, id_thread_sntp;
+
+extern osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp;
 
 extern int init_threads_rtc (void);
 
 
 
+extern uint32_t  read_time_strings(const char *env, char *buf, char *str);
 
+extern int ntp_timestamp;
+
+extern char str_time_sntp[50];
+extern char str_time_rtc[50];
 
 /**
  * NEW - end

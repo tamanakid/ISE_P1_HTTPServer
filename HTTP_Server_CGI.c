@@ -14,6 +14,8 @@
 #include "rl_net_lib.h"
 #include "GPIO_LPC17xx.h"
 
+#include "rtc.h"
+
 #include "HTTP_Server.h"
 
 
@@ -35,7 +37,10 @@ extern struct http_cfg  http_config;
 extern bool LEDrun;
 extern bool LCDupdate;
 extern char lcd_text[2][30+1];
-extern int ntp_seconds;
+
+extern int ntp_timestamp;
+extern char str_time_sntp[50];
+extern char str_time_rtc[50];
 
 
 // Local variables.
@@ -220,10 +225,6 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       } else if (env[2] == 'o') {
 				len = sprintf (buf, &env[4], LEDrun ? "disabled" : "");
 				break;
-			} else if (env[2] == 'n') {
-				timestamp = ntp_seconds;
-				len = sprintf (buf, &env[4], timestamp);
-				break;
 			}
       // LED CheckBoxes
       id = env[2] - '0';
@@ -332,10 +333,55 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 
     case 'x':
       // AD Input from 'ad.cgx'
+		
       adv = adc_read();
       len = sprintf (buf, &env[1], adv);
       break;
+		
+		
+		case 't':
+			// Time from RTC & SNTP
+		
+			if (env[2] == 's') {
+				// Timestamp
+				timestamp = ntp_timestamp;
+				len = sprintf (buf, &env[4], timestamp);
+				break;
 
+			} else if (env[2] == 'n') {
+				// Last SNTP request time
+				len = sprintf (buf, &env[4], str_time_sntp);
+				break;
+
+			} else if (env[2] == 'm') {
+				// RTC time
+				rtc_get_full_time();
+				snprintf(
+					str_time_rtc,
+					sizeof(str_time_rtc),
+					"%.4d/%.2d/%.2d - %.2d:%.2d:%.2d",
+					rtc_years, rtc_months, rtc_days, rtc_hours, rtc_minutes, rtc_seconds
+				);
+				len = sprintf (buf, &env[4], str_time_rtc);
+				break;
+			}
+		
+		
+		case 'r':
+      // RTC Input from 'time_rtc.cgx'
+			if (env[2] == 'n') {
+				// Last SNTP request time
+				len = read_time_strings(env, buf, str_time_sntp);
+				break;
+
+			} else if (env[2] == 'm') {
+				// RTC time
+				len = read_time_strings(env, buf, str_time_rtc);
+				break;
+
+			}
+      break;
+			
   }
   return (len);
 }

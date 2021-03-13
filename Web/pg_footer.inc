@@ -11,6 +11,7 @@
 						<a href="/leds.cgi">LED</a>
 						<a href="/lcd.cgi">LCD</a>
 						<a href="/ad.cgi">AD</a>
+						<a href="/time.cgi">TIME</a>
 					</td>
 				</tr>
 				<tr>

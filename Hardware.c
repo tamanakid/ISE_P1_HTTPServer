@@ -5,8 +5,10 @@
 #include "PIN_LPC17xx.h"
 #include "LPC17xx.h"
 
-#include "HTTP_Server.h"
 #include "lcd.h"
+#include "rtc.h"
+
+#include "HTTP_Server.h"
 
 
 extern char lcd_text[2][30+1];
@@ -77,6 +79,7 @@ uint8_t leds_running_set(uint8_t current_led) {
 }
 
 
+
 /**
  * Configure AD[0] peripheral to perform Analog-to-Digital Conversion
  */
@@ -105,6 +108,7 @@ uint16_t adc_read(void) {
 }
 
 
+
 /**
  * Configure the LCD and initialize to clear values
  */
@@ -130,4 +134,29 @@ void lcd_write(void) {
 	escribe_frase_L2(lcd_buf, sizeof(lcd_buf));
 	
 	copy_to_lcd();
+}
+
+
+
+/**
+ * Configure the Joystick to trigger interrupts upon center-key press
+ */
+void joystick_initialize(void) {
+	PIN_Configure(PORT_PINS, PIN_JST_C, PIN_FUNC_0, PIN_PINMODE_PULLDOWN, PIN_PINMODE_NORMAL);
+
+	LPC_GPIOINT->IO0IntEnR |= (1UL << PIN_JST_C);
+
+	NVIC_EnableIRQ(EINT3_IRQn);
+}
+
+
+/**
+ * GPIO ISR (Joystick Center press): Resets time to default date upon
+ */
+void EINT3_IRQHandler() {
+	
+	if (LPC_GPIOINT->IO0IntStatR & (1 << PIN_JST_C)) {
+		rtc_reset_full_time();
+  }
+	LPC_GPIOINT->IO0IntClr |= (1 << PIN_JST_C);
 }
