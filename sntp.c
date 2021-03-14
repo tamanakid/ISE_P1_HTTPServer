@@ -9,28 +9,31 @@
 #include "HTTP_Server.h"
 
 
-extern bool LEDrun;
-extern bool LED2blink;
-extern bool LED3blink;
+/* Extern Declarations */
+
+extern bool led2_blink;
 
 
+/* Definitions */
 
 int ntp_timestamp = 0;
-
-char str_time_sntp[50];
-char str_time_rtc[50];
-
-time_t timestamp_tt;
-struct tm timestamp_tm;
+int ntp_server_selected = 1;
 
 const uint8_t ntp_server_1[4] = {130,206,3,166};
 const uint8_t ntp_server_2[4] = {193,147,107,33};
 const uint8_t *ntp_server;
 
-netStatus set_mode_status, request_status;
+char str_time_sntp[50];
+char str_time_rtc[50];
+
+// Local-only definitions
+time_t timestamp_tt;
+struct tm timestamp_tm;
 
 
-
+/**
+ * Thread: Makes SNTP request upon reset and every three minutes
+ */
 void thread_sntp (void const *argument) {
 	static int minute_count = 3;
 	
@@ -41,7 +44,7 @@ void thread_sntp (void const *argument) {
   while (1) {		
 		minute_count++;
 		if (minute_count >= 3) {
-			request_status = sntp_get_time (ntp_server, sntp_response_callback);
+			sntp_get_time (ntp_server, sntp_response_callback);
 			minute_count = 0;
 		}
 		osSignalWait(0x02, osWaitForever);
@@ -49,7 +52,12 @@ void thread_sntp (void const *argument) {
 }
 
 
-static void sntp_response_callback (uint32_t timestamp) {	
+
+/**
+ * Callback upon SNTP response: Set time to GMT+1 (3600 seconds after UFT)
+ * @param timestamp - timestamp response from SNTP Server
+ */
+static void sntp_response_callback (uint32_t timestamp) {
   if (timestamp == 0) {
     ntp_timestamp = 0;
 
@@ -71,19 +79,29 @@ static void sntp_response_callback (uint32_t timestamp) {
 		
     ntp_timestamp = (int) timestamp;
 		
-		LED2blink = true;
+		led2_blink = true;
   }
 }
 
 
-extern uint32_t  read_time_strings(const char *env, char *buf, char *str) {
+
+/**
+ * Function called from HTTP_Server_CGI.c to get the RTC/SNTP dates formatted to string
+ * Either date may be asked by the "str" parameter, but the RTC clock is always refreshed
+ * @param env, buf - char pointers to HTML content
+ * @param str - char pointer to the string to get the data from (RTC or SNTP)
+ * @return length of data stream to response (used by HTTP_Server_CGI.c)
+ */
+extern uint32_t read_time_strings(const char *env, char *buf, char *str) {
 	rtc_get_full_time();
+	
 	snprintf(
 		str_time_rtc,
 		sizeof(str_time_rtc),
 		"%.4d/%.2d/%.2d - %.2d:%.2d:%.2d",
 		rtc_years, rtc_months, rtc_days, rtc_hours, rtc_minutes, rtc_seconds
 	);
+	
 	return sprintf (buf, &env[4], str);
 }
 

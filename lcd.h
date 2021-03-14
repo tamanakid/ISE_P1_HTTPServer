@@ -3,6 +3,7 @@
 
 
 /* MODULE DEPENDENCIES */
+#include "LPC17xx.h"
 
 /* CONSTANTS */
 

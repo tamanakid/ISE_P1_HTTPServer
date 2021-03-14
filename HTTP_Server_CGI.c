@@ -34,10 +34,12 @@ extern struct http_cfg  http_config;
 #define http_auth_passw http_config.Passw
 
 
-extern bool LEDrun;
-extern bool LED2blink;
-extern bool LED3blink;
-extern bool LCDupdate;
+extern bool leds_running;
+extern bool led2_blink;
+extern bool led3_blink;
+extern uint8_t leds_on;
+
+extern bool lcd_update;
 extern char lcd_text[2][30+1];
 
 extern bool rtc_active;
@@ -49,10 +51,6 @@ extern const uint8_t ntp_server_2[4];
 extern int ntp_server_selected;
 extern char str_time_sntp[50];
 extern char str_time_rtc[50];
-
-
-// Local variables.
-uint8_t leds_status = 0;
 
 
 // My structure of CGI status variable.
@@ -113,9 +111,9 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
   }
 	
 	if (strncmp (data, "pg=led", 6) == 0) {
-		leds_status = 0;
+		leds_on = 0;
 	}
-  // LEDrun = true;
+  // leds_running = true;
   if (len == 0) {
     // No data or all items (radio, checkbox) are off
     return;
@@ -127,22 +125,22 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
     if (var[0] != 0) {
       // First character is non-null, string exists
       if (strcmp (var, "led0=on") == 0) {
-        leds_status |= 0x01;
+        leds_on |= 0x01;
       }
       else if (strcmp (var, "led1=on") == 0) {
-        leds_status |= 0x02;
+        leds_on |= 0x02;
       }
       else if (strcmp (var, "led2=on") == 0) {
-        leds_status |= 0x04;
+        leds_on |= 0x04;
       }
       else if (strcmp (var, "led3=on") == 0) {
-        leds_status |= 0x08;
+        leds_on |= 0x08;
       }
 			else if (strncmp (var, "ctrl=Running", 10) == 0) {
-        LEDrun = true;
+        leds_running = true;
       }
       else if (strcmp (var, "ctrl=Browser") == 0) {
-        LEDrun = false;
+        leds_running = false;
       }
 			
 			else if (strncmp (var, "sntp=Server1", 12) == 0) {
@@ -176,12 +174,12 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       else if (strncmp (var, "lcd1=", 5) == 0) {
         // LCD Module line 1 text
         strcpy (lcd_text[0], var+5);
-        LCDupdate = true;
+        lcd_update = true;
       }
       else if (strncmp (var, "lcd2=", 5) == 0) {
         // LCD Module line 2 text
         strcpy (lcd_text[1], var+5);
-        LCDupdate = true;
+        lcd_update = true;
       }
     }
   } while (data);
@@ -233,11 +231,11 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       // LED control from 'led.cgi'
       if (env[2] == 'c') {
         // Select Control
-        len = sprintf (buf, &env[4], LEDrun ?     ""     : "selected",
-                                     LEDrun ? "selected" :    ""     );
+        len = sprintf (buf, &env[4], leds_running ?     ""     : "selected",
+                                     leds_running ? "selected" :    ""     );
         break;
       } else if (env[2] == 'o') {
-				len = sprintf (buf, &env[4], LEDrun ? "disabled" : "");
+				len = sprintf (buf, &env[4], leds_running ? "disabled" : "");
 				break;
 			}
       // LED CheckBoxes
@@ -248,20 +246,20 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
       id = 1 << id;
       
       led_id = env[2];
-			is_checked = (leds_status & id);
+			is_checked = (leds_on & id);
       
 			// Evaluate both 'checked' and 'disabled' attributes
-			if (is_checked && LEDrun) {
+			if (is_checked && leds_running) {
 				strcpy(checkbox_text, "checked disabled");
-			} else if (!is_checked && LEDrun) {
+			} else if (!is_checked && leds_running) {
 				strcpy(checkbox_text, "disabled");
-			} else if (is_checked && !LEDrun) {
+			} else if (is_checked && !leds_running) {
 				strcpy(checkbox_text, "checked");
 			} else {
 				strcpy(checkbox_text, "");
 			}
 			
-			if (LED3blink != true && LED2blink != true) {
+			if (led3_blink != true && led2_blink != true) {
 				leds_browser_set(led_id, is_checked);
 			}
 			len = sprintf (buf, &env[4], &checkbox_text);
