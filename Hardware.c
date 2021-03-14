@@ -92,7 +92,7 @@ void leds_blink_led2() {
 	GPIO_PinWrite(PORT_LED, PIN_LED1, 0);
 	GPIO_PinWrite(PORT_LED, PIN_LED0, 0);
 	
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < 6; i++) {
 		led2_on = !led2_on;
 		GPIO_PinWrite(PORT_LED, PIN_LED2, led2_on);
 		osDelay(300);

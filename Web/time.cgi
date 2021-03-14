@@ -22,11 +22,10 @@ t 		<li>The time kept by the <b>Real Time Clock (RTC)</b> at request time.</li>
 t 		<li>The time when the last <b>SNTP Request</b> was made by the µC</li></font>
 t 	</ol>
 t </div>
-t <form action=time.cgi method=post name=form1>
-t 	<input type=hidden value="led" name=pg>
+t 	<input type=hidden value="time" name=pg>
 t 	<table border=0 width=99%><font size="3">
 t 		<tr bgcolor=#aaccff>
-t  			<th width=40%>Item</th>
+t  			<th width=40%>Date</th>
 t  			<th width=60%>Value</th>
 t 		</tr>
 t 		<tr>
@@ -39,7 +38,26 @@ t 			<td><img src=pabb.gif>Last SNTP Request:</td>
 t 			<td><input type="text" readonly style="background-color: transparent; border: 0px"
 c t n   	size="30" id="time_sntp" value="%s"></td>
 t 		</tr>
+t 		<tr bgcolor=#aaccff>
+t  			<th width=40%>Item</th>
+t  			<th width=60%>Settings</th>
+t 		</tr>
+t 		<tr><form action=time.cgi method=post name=form1>
+t 			<td><img src=pabb.gif>SNTP Server:</td>
+t  			<td><select name="sntp" onchange="document.form1.submit();">
+c t 1 		<option %s>
+t 					Server1: hora.rediris.es (130.206.3.166)</option>
+c t 2 		<option %s>
+t 					Server2: ntp1.software.imdea.org (193.147.107.33)</option>
+t 			</select></td>
+t 		</tr></form>
+t 		<tr><form action=time.cgi method=post name=form2>
+t 			<td><img src=pabb.gif>RTC Alarm:</td>
+t  			<td><select name="alarm" onchange="document.form2.submit();">
+c t 3 		<option %s>Active</option>
+c t 4 		<option %s>Inactive</option>
+t 			</select></td>
+t 		</tr></form>
 t 	</table>
-t </form>
 i pg_footer.inc
 . End of script must be closed with period.

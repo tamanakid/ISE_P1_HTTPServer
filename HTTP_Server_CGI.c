@@ -35,11 +35,18 @@ extern struct http_cfg  http_config;
 
 
 extern bool LEDrun;
+extern bool LED2blink;
 extern bool LED3blink;
 extern bool LCDupdate;
 extern char lcd_text[2][30+1];
 
+extern bool rtc_active;
+
 extern int ntp_timestamp;
+extern const uint8_t *ntp_server;
+extern const uint8_t ntp_server_1[4];
+extern const uint8_t ntp_server_2[4];
+extern int ntp_server_selected;
 extern char str_time_sntp[50];
 extern char str_time_rtc[50];
 
@@ -137,6 +144,22 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       else if (strcmp (var, "ctrl=Browser") == 0) {
         LEDrun = false;
       }
+			
+			else if (strncmp (var, "sntp=Server1", 12) == 0) {
+        ntp_server_selected = 1;
+				ntp_server = &ntp_server_1[0];
+      }
+      else if (strncmp (var, "sntp=Server2", 12) == 0) {
+        ntp_server_selected = 2;
+				ntp_server = &ntp_server_2[0];
+      }
+			else if (strncmp (var, "alarm=Active", 12) == 0) {
+        rtc_active = true;
+      }
+			else if (strncmp (var, "alarm=Inactive", 14) == 0) {
+        rtc_active = false;
+      }
+			
       else if ((strncmp (var, "pw0=", 4) == 0) ||
                (strncmp (var, "pw2=", 4) == 0)) {
         // Change password, retyped password
@@ -238,7 +261,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 				strcpy(checkbox_text, "");
 			}
 			
-			if (LED3blink != true) {
+			if (LED3blink != true && LED2blink != true) {
 				leds_browser_set(led_id, is_checked);
 			}
 			len = sprintf (buf, &env[4], &checkbox_text);
@@ -357,6 +380,22 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 				);
 				len = sprintf (buf, &env[4], str_time_rtc);
 				break;
+
+			} else if (env[2] == '1') {
+        // Select SNTP Server from browser
+        len = sprintf (buf, &env[4], ntp_server_selected == 1 ? "selected" : "");
+        break;
+			} else if (env[2] == '2') {
+        // Select SNTP Server from browser
+        len = sprintf (buf, &env[4], ntp_server_selected == 2 ? "selected" : "");
+        break;
+				
+			} else if (env[2] == '3') {
+				// Select RTC alarm as active
+				len = sprintf (buf, &env[4], rtc_active ? "selected" : "");
+			} else if (env[2] == '4') {
+				// Select RTC alarm as active
+				len = sprintf (buf, &env[4], rtc_active ? "" : "selected");
 			}
 		
 		

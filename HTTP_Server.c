@@ -29,8 +29,14 @@
 bool LEDrun = true;
 bool LED2blink = false;
 bool LED3blink = false;
+
 bool LCDupdate;
 char lcd_text[2][30+1];
+
+int ntp_server_selected = 1;
+
+bool rtc_active = true;
+
 
 void thread_leds (void const *arg);
 void thread_lcd  (void const *argument);
@@ -109,9 +115,10 @@ static void thread_leds (void const *arg) {
  * Callback from RTC ISR
  */
 void rtc_handle_interrupt() {
-	osSignalSet(id_thread_sntp, 0x02);
-	LED3blink = true;
-	// osSignalSet(id_thread_leds3, 0x01);
+	if (rtc_active == true) {
+		osSignalSet(id_thread_sntp, 0x02);
+		LED3blink = true;
+	}
 }
 
 

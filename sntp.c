@@ -24,7 +24,8 @@ time_t timestamp_tt;
 struct tm timestamp_tm;
 
 const uint8_t ntp_server_1[4] = {130,206,3,166};
-// const uint8_t ntp_server_2[4] = {193,147,107,33};
+const uint8_t ntp_server_2[4] = {193,147,107,33};
+const uint8_t *ntp_server;
 
 netStatus set_mode_status, request_status;
 
@@ -34,13 +35,15 @@ void thread_sntp (void const *argument) {
 	static int minute_count = 3;
 	
 	strcpy(str_time_sntp, "No request since reset");
+	ntp_server = &ntp_server_1[0];
+	osDelay(1000);
 
-  while (1) {
+  while (1) {		
 		minute_count++;
 		if (minute_count >= 3) {
-			request_status = sntp_get_time (&ntp_server_1[0], sntp_response_callback);
+			request_status = sntp_get_time (ntp_server, sntp_response_callback);
 			minute_count = 0;
-		}		
+		}
 		osSignalWait(0x02, osWaitForever);
 	}
 }

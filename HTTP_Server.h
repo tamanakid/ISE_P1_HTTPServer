@@ -82,6 +82,9 @@ extern void leds_restore_browser_config(void);
 extern uint32_t  read_time_strings(const char *env, char *buf, char *str);
 
 extern int ntp_timestamp;
+extern const uint8_t ntp_server_1[4];
+extern const uint8_t ntp_server_2[4];
+extern const uint8_t *ntp_server;
 
 extern char str_time_sntp[50];
 extern char str_time_rtc[50];
