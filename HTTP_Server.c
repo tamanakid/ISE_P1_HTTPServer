@@ -26,11 +26,12 @@ void thread_leds (void const *arg);
 void thread_lcd  (void const *argument);
 void thread_sntp (void const *argument);
 
-osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp;
+osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp, id_thread_flash;
 
 osThreadDef (thread_lcd, osPriorityNormal, 1, 0);
 osThreadDef (thread_leds, osPriorityNormal, 1, 0);
 osThreadDef (thread_sntp, osPriorityNormal, 1, 0);
+osThreadDef (thread_flash, osPriorityNormal, 1, 0);
 
 
 
@@ -48,7 +49,8 @@ int init_threads (void) {
 	id_thread_leds = osThreadCreate (osThread(thread_leds), NULL);
   id_thread_lcd = osThreadCreate (osThread(thread_lcd), NULL);
 	id_thread_sntp = osThreadCreate (osThread(thread_sntp), NULL);
-  if (!id_thread_leds || !id_thread_lcd || !id_thread_sntp) return(-1);
+	id_thread_flash = osThreadCreate (osThread(thread_flash), NULL);
+  if (!id_thread_leds || !id_thread_lcd || !id_thread_sntp ||!id_thread_flash) return(-1);
   
   return(0);
 }
@@ -73,6 +75,7 @@ void rtc_handle_interrupt() {
 int main (void) {
 	/* Network initialization */
   net_initialize();
+	get_network_data();
 	
 	/* Peripherals initialization */
 	leds_initialize();
@@ -85,6 +88,9 @@ int main (void) {
 
 	/* RTOS threads initialization */
 	init_threads();
+	
+	/* Write network data into flash */
+	// flash_write_data();
 
 	/* Run program */
   while(1) {

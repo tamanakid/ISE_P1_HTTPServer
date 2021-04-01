@@ -41,12 +41,13 @@
  */
 extern bool rtc_active;
 
-extern osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp;
+extern osThreadId id_thread_lcd, id_thread_leds, id_thread_sntp, id_thread_flash;
 int init_threads_rtc (void);
 
 void thread_leds (void const *arg);
 void thread_lcd  (void const *argument);
 void thread_sntp (void const *argument);
+void thread_flash (void const *argument);
 
 
 
@@ -60,6 +61,7 @@ extern bool led3_blink;
 extern uint8_t leds_on;
 
 void leds_initialize(void);
+void leds_get_flash_status(void);
 void leds_blink_led3(void);
 void leds_blink_led2(void);
 void leds_restore_browser_config(void);
@@ -105,3 +107,40 @@ extern char str_time_rtc[50];
 
 static void sntp_response_callback (uint32_t timestamp);
 uint32_t read_time_strings(const char *env, char *buf, char *str);
+
+
+
+/**
+ * Defined in network_data.c
+ */
+extern uint8_t net_mac_address	[6];
+extern uint8_t net_ip_address		[4];
+
+void get_network_data (void);
+
+
+
+
+/**
+ * Defined in flash_interface.c
+ */
+ typedef struct {
+	uint32_t start;
+	uint32_t end;
+} FlashAddressRange;
+
+typedef struct {
+	uint8_t start;
+	uint8_t end;
+} FlashSectorRange;
+
+extern uint8_t net_mac_address	[6];
+extern uint8_t net_ip_address		[4];
+
+void flash_write_data						(void);
+void flash_get_sector_range			(FlashAddressRange *address_range, FlashSectorRange *sector_range);
+void flash_erase_sector					 (int start, int end);
+void flash_write_array					(uint32_t address_start, uint8_t *array);
+void flash_read_array						(uint32_t address, uint8_t *dest, int size);
+void flash_write_byte						(uint32_t byte_address, uint8_t value);
+void flash_write_bytes_tuple		(uint32_t start_write_address, uint8_t values[], uint8_t size);

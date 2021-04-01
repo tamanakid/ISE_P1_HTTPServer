@@ -13,6 +13,7 @@
 #include "rl_net.h"
 #include "rl_net_lib.h"
 #include "GPIO_LPC17xx.h"
+#include "cmsis_os.h"
 
 #include "rtc.h"
 
@@ -104,6 +105,7 @@ void cgi_process_query (const char *qstr) {
 //            - 5 = the same as 4, but with more XML data to follow.
 void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
   char var[40],passw[12];
+	bool write_leds_status = false;
 
   if (code != 0) {
     // Ignore all other codes
@@ -112,6 +114,7 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
 	
 	if (strncmp (data, "pg=led", 6) == 0) {
 		leds_on = 0;
+		write_leds_status = true;
 	}
   // leds_running = true;
   if (len == 0) {
@@ -126,15 +129,19 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       // First character is non-null, string exists
       if (strcmp (var, "led0=on") == 0) {
         leds_on |= 0x01;
+				write_leds_status = true;
       }
       else if (strcmp (var, "led1=on") == 0) {
         leds_on |= 0x02;
+				write_leds_status = true;
       }
       else if (strcmp (var, "led2=on") == 0) {
         leds_on |= 0x04;
+				write_leds_status = true;
       }
       else if (strcmp (var, "led3=on") == 0) {
         leds_on |= 0x08;
+				write_leds_status = true;
       }
 			else if (strncmp (var, "ctrl=Running", 10) == 0) {
         leds_running = true;
@@ -183,6 +190,10 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       }
     }
   } while (data);
+	
+	if (write_leds_status == true) {
+		osSignalSet(id_thread_flash, 0x01);
+	}		
 }
 
 // Generate dynamic web data from a script line.

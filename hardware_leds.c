@@ -7,6 +7,8 @@
 #include "HTTP_Server.h"
 
 
+#define FLASH_ADDR_LEDS	0x0001800A
+
 
 /* Definitions */
 
@@ -23,7 +25,6 @@ uint8_t leds_on = 0;
 void thread_leds (void const *arg) {
 	
 	uint8_t current_led = 0;
-  leds_running = true;
 	
   while(1) {
 		if (led3_blink == true) {
@@ -53,7 +54,32 @@ void leds_initialize(void) {
 	GPIO_SetDir(PORT_LED, PIN_LED1, GPIO_DIR_OUTPUT);
 	GPIO_SetDir(PORT_LED, PIN_LED2, GPIO_DIR_OUTPUT);
 	GPIO_SetDir(PORT_LED, PIN_LED3, GPIO_DIR_OUTPUT);
+	
+	leds_get_flash_status();
 }
+
+
+/**
+ * Set LEDs status variables according to Flash register (FLASH_ADDR_LEDS)
+ */
+void leds_get_flash_status (void) {
+	/*
+	uint8_t *ptr_leds_status;
+	uint8_t leds_status[1] = { 0x00 };
+
+	ptr_leds_status = (uint8_t*)(FLASH_ADDR_LEDS);
+	leds_status[0] = *ptr_leds_status;
+	leds_running = (leds_status[0] & 0x08) ? false : true;
+	leds_on = (leds_running == true) ? leds_status[0] & 0x0F : 0x00;
+	*/
+	uint8_t dest_array[11] = { 0 };
+	
+	flash_read_array(0x00018000, dest_array, 11);
+
+	leds_running = (dest_array[10] & 0x10) ? false : true;
+	leds_on = dest_array[10] & 0x0F; // (leds_running == false) ? dest_array[10] & 0x0F : 0x00;
+}
+
 
 
 /**

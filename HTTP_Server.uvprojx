@@ -452,6 +452,16 @@
               <FileType>1</FileType>
               <FilePath>.\hardware_lcd.c</FilePath>
             </File>
+            <File>
+              <FileName>flash_interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\flash_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>network_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\network_data.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -556,6 +566,31 @@
               <FileName>Abstract.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\Abstract.txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FlashDrivers</GroupName>
+          <Files>
+            <File>
+              <FileName>lpc_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_iap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lpc17xx_iap.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_iap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc17xx_iap.h</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_libcfg.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc17xx_libcfg.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -704,10 +739,10 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4096</DriverSelection>
+            <DriverSelection>4099</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
-          <Flash2>BIN\UL2CM3.DLL</Flash2>
+          <Flash2>BIN\CMSIS_AGDI.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut>Web.c</pFcarmOut>
@@ -1022,6 +1057,16 @@
               <FileType>1</FileType>
               <FilePath>.\hardware_lcd.c</FilePath>
             </File>
+            <File>
+              <FileName>flash_interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\flash_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>network_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\network_data.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1126,6 +1171,31 @@
               <FileName>Abstract.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\Abstract.txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FlashDrivers</GroupName>
+          <Files>
+            <File>
+              <FileName>lpc_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_iap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lpc17xx_iap.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_iap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc17xx_iap.h</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_libcfg.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lpc17xx_libcfg.h</FilePath>
             </File>
           </Files>
         </Group>
