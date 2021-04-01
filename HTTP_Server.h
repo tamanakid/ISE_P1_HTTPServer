@@ -103,13 +103,19 @@ void lcd_write(void);
 
 
 /**
- * Defined in Hardware.c
+ * Defined in hardware_adc.c
  */
-// ADC-related
-void adc_initialize(void);
-uint16_t adc_read(void);
+extern uint8_t adc_threshold;
 
-// Joystick-related
+void 			adc_initialize					(void);
+uint16_t 	adc_read								(void);
+uint8_t 	adc_get_flash_threshold (void);
+
+
+
+/**
+ * Defined in hardware_joystick.c
+ */
 void joystick_initialize(void);
 
 
@@ -135,7 +141,6 @@ uint32_t read_time_strings(const char *env, char *buf, char *str);
  */
 void 		rgb_initialize 					(void);
 void 		rgb_set_status					(uint16_t adc_value);
-uint8_t rgb_get_flash_threshold (void);
 
 
 

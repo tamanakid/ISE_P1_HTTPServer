@@ -438,6 +438,16 @@
               <FilePath>.\sntp.c</FilePath>
             </File>
             <File>
+              <FileName>hardware_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_joystick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_joystick.c</FilePath>
+            </File>
+            <File>
               <FileName>hardware_leds.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\hardware_leds.c</FilePath>
@@ -461,16 +471,6 @@
               <FileName>network_data.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\network_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>hardware_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\hardware_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>hardware_joystick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\hardware_joystick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1053,6 +1053,16 @@
               <FilePath>.\sntp.c</FilePath>
             </File>
             <File>
+              <FileName>hardware_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_joystick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_joystick.c</FilePath>
+            </File>
+            <File>
               <FileName>hardware_leds.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\hardware_leds.c</FilePath>
@@ -1076,16 +1086,6 @@
               <FileName>network_data.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\network_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>hardware_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\hardware_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>hardware_joystick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\hardware_joystick.c</FilePath>
             </File>
           </Files>
         </Group>

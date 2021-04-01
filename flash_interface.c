@@ -6,12 +6,19 @@
 
 
 
+/* Extern Declarations */
+
+extern uint8_t adc_threshold;
+
 extern uint8_t net_mac_address	[6];
 extern uint8_t net_ip_address		[4];
 
 extern uint8_t leds_on;
 extern bool leds_running;
 
+
+
+/* Definitions */
 
 uint32_t result[4];
 
@@ -43,7 +50,7 @@ void thread_flash (void const *argument) {
 		flash_buffer[0x0A] = flash_buffer[0x0A] | leds_on;
 		
 		/* ADC Threshold */
-		flash_buffer[0x0B] = ADC_THRESHOLD;
+		flash_buffer[0x0B] = adc_threshold;
 		
 		/* Write array into flash */
 		flash_write_array(FLASH_SECTOR_11_START, flash_buffer, FLASH_WRITE_SIZE);

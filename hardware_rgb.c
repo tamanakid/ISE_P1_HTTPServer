@@ -5,6 +5,8 @@
 
 
 
+/* Definitions */
+
 /* RGB LED Initialization */
 void rgb_initialize (void) {	
 	GPIO_SetDir(PORT_RGB, PIN_GREEN, GPIO_DIR_OUTPUT);
@@ -21,9 +23,9 @@ void rgb_initialize (void) {
 void rgb_set_status (uint16_t adc_value) {
 	uint16_t adc_value_8t = adc_value >> 4;
 	
-	uint8_t current_adc_threshold = rgb_get_flash_threshold();
+	uint8_t current_adc_threshold = adc_get_flash_threshold();
 	
-	if (adc_value_8t > current_adc_threshold) {
+	if (adc_value_8t >= current_adc_threshold) {
 		GPIO_PinWrite (PORT_RGB, PIN_RED, 1);
 		GPIO_PinWrite (PORT_RGB, PIN_GREEN, 1);
 		GPIO_PinWrite (PORT_RGB, PIN_BLUE, 0);
@@ -32,14 +34,4 @@ void rgb_set_status (uint16_t adc_value) {
 		GPIO_PinWrite (PORT_RGB, PIN_GREEN, 1);
 		GPIO_PinWrite (PORT_RGB, PIN_BLUE, 1);
 	}
-}
-
-
-
-uint8_t rgb_get_flash_threshold (void) {
-	uint8_t dest_array[1] = { 0 };
-	
-	flash_read_array(FLASH_ADDR_RGB_THRESHOLD, dest_array, 1);
-
-	return dest_array[0];
 }

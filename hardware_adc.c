@@ -4,6 +4,7 @@
 
 
 /* Definitions */
+uint8_t adc_threshold = ADC_THRESHOLD;
 
 
 /**
@@ -33,4 +34,14 @@ uint16_t adc_read(void) {
 	rgb_set_status(buffer_adc_sensor);
 	
 	return buffer_adc_sensor;
+}
+
+
+
+uint8_t adc_get_flash_threshold (void) {
+	uint8_t dest_array[1] = { 0 };
+	
+	flash_read_array(FLASH_ADDR_RGB_THRESHOLD, dest_array, 1);
+
+	return dest_array[0];
 }

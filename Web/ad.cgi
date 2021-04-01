@@ -19,6 +19,16 @@ t  }
 t  else
 t   clearTimeout(ad_elTime);
 t }
+t function submitThreshold() {
+t 	var thresholdElement = document.ad.elements["threshold"];
+t 	var numberValue = Number(thresholdElement.value);
+t 	if (numberValue < 0 || numberValue > 255) {
+t 		alert('Threshold value must be between 0 and 255');
+t 	} else {
+t 		thresholdElement.value = thresholdElement.value.padStart(3, '0');
+t 		document.ad.submit();
+t 	}
+t }
 t </script></head>
 i pg_header.inc
 t <h2 align="center"><br>AD Converter Input</h2>
@@ -45,9 +55,18 @@ t <td height=50><table bgcolor="#FFFFFF" border="2" cellpadding="0" cellspacing=
 c g 3 <td><table id="ad_table" style="width: %d%%" border="0" cellpadding="0" cellspacing="0">
 t <tr><td bgcolor="#0000FF">&nbsp;</td></tr></table></td></tr></table></td></tr>
 t </font></table>
-t <p align=center>
-t <input type=button value="Refresh" onclick="updateMultiple(formUpdate,plotADGraph)">
-t Periodic:<input type="checkbox" id="adChkBox" onclick="periodicUpdateAd()">
-t </p></form>
+t <div style="display: flex; justify-content: space-evenly;" style="margin: 1rem 0;">
+t <div>
+t 	<input type=button value="Refresh" onclick="updateMultiple(formUpdate,plotADGraph)" style="margin-right: 1rem;">
+t 	<span>Periodic:<input type="checkbox" id="adChkBox" onclick="periodicUpdateAd()"></span>
+t </div>
+t <div style="font-size: 0.8rem; display: flex; align-items: start;">
+t 	<div style="text-align: center">
+t 		<p style="margin: 0">Threshold (0-255)</p>
+c g 4 <p style="margin: 0.5rem; font-weight: bold;">Current Value: 0x%02X0</p>
+t 	</div><div>
+c g 5 <input type="number" name=threshold min="0" max="255" value="%3.0d">
+t <input type=button value="Save Threshold" onclick="submitThreshold()">
+t </div></div></div></form>
 i pg_footer.inc
 . End of script must be closed with period

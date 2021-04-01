@@ -8,6 +8,7 @@
  *----------------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "rl_net.h"
@@ -44,6 +45,8 @@ extern uint8_t leds_on;
 
 extern bool lcd_update;
 extern char lcd_text[2][30+1];
+
+extern uint8_t adc_threshold;
 
 extern bool rtc_active;
 
@@ -111,7 +114,9 @@ void cgi_process_query (const char *qstr) {
 //            - 5 = the same as 4, but with more XML data to follow.
 void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
   char var[40],passw[12];
-	bool write_leds_status = false;
+	bool write_to_flash = false;
+	char threshold_char[3];
+	uint8_t threshold_placeholder;
 
   if (code != 0) {
     // Ignore all other codes
@@ -120,7 +125,14 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
 	
 	if (strncmp (data, "pg=led", 6) == 0) {
 		leds_on = 0;
-		write_leds_status = true;
+		write_to_flash = true;
+	} else if (strncmp (data, "pg=ad&threshold", 15) == 0) {
+		strncpy(threshold_char, &data[16], 3);
+		threshold_placeholder = (uint8_t) strtol(threshold_char, (char **)NULL, 10);
+		if (threshold_placeholder < 256) {
+			adc_threshold = threshold_placeholder;
+			write_to_flash = true;
+		}
 	}
   // leds_running = true;
   if (len == 0) {
@@ -193,7 +205,7 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
     }
   } while (data);
 	
-	if (write_leds_status == true) {
+	if (write_to_flash == true) {
 		osSignalSet(id_thread_flash, 0x01);
 	}		
 }
@@ -208,6 +220,7 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
 	uint8_t is_checked;
 	char led_id;
 	char checkbox_text[50];
+	uint8_t adc_threshold;
   static uint32_t adv;
 	static int timestamp;
 
@@ -356,6 +369,15 @@ uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi
         case '3':
           adv = (adv * 100) / 4096;
           len = sprintf (buf, &env[4], adv);
+          break;
+				// 4&5 are the ADC Threshold value in hex and decimal notations
+				case '4':
+          adc_threshold = adc_get_flash_threshold();
+          len = sprintf (buf, &env[4], adc_threshold);
+          break;
+				case '5':
+          adc_threshold = adc_get_flash_threshold();
+          len = sprintf (buf, &env[4], (int)adc_threshold);
           break;
       }
       break;
