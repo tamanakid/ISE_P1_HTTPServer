@@ -32,7 +32,7 @@ struct tm timestamp_tm;
 
 
 /**
- * Thread: Makes SNTP request upon reset and every three minutes
+ * @brief		Thread: SNTP Client - Makes SNTP request upon reset and every three minutes
  */
 void thread_sntp (void const *argument) {
 	static int minute_count = 3;
@@ -54,8 +54,8 @@ void thread_sntp (void const *argument) {
 
 
 /**
- * Callback upon SNTP response: Set time to GMT+1 (3600 seconds after UFT)
- * @param timestamp - timestamp response from SNTP Server
+ * @brief 	Callback upon SNTP response: Set time to GMT+2 (7200 seconds after GMT)
+ * @param 	uint32_t timestamp - timestamp response from SNTP Server
  */
 static void sntp_response_callback (uint32_t timestamp) {
   if (timestamp == 0) {
@@ -63,7 +63,7 @@ static void sntp_response_callback (uint32_t timestamp) {
 
   } else {
 		// Consider GMT+1
-		timestamp_tt = timestamp + 3600;
+		timestamp_tt = timestamp + UTC_GMT_PLUS2;
 		(void) localtime_r(&timestamp_tt, &timestamp_tm);
 		
 		strftime(str_time_sntp, sizeof(str_time_sntp), "%Y/%m/%d - %H:%M:%S\n", &timestamp_tm);
@@ -86,10 +86,11 @@ static void sntp_response_callback (uint32_t timestamp) {
 
 
 /**
- * Function called from HTTP_Server_CGI.c to get the RTC/SNTP dates formatted to string
- * Either date may be asked by the "str" parameter, but the RTC clock is always refreshed
- * @param env, buf - char pointers to HTML content
- * @param str - char pointer to the string to get the data from (RTC or SNTP)
+ * @brief				Function called from HTTP_Server_CGI.c to get the RTC/SNTP dates formatted to string
+ * 								Either date may be asked by the "str" parameter, but the RTC clock is always refreshed
+ * @param[out] 	env - char pointer to HTML content
+ * @param[out] 	buf - char pointer to HTML content
+ * @param[in]		str - char pointer to the string to get the data from (RTC or SNTP)
  * @return length of data stream to response (used by HTTP_Server_CGI.c)
  */
 extern uint32_t read_time_strings(const char *env, char *buf, char *str) {

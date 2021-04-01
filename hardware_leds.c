@@ -59,19 +59,11 @@ void leds_initialize(void) {
 }
 
 
+
 /**
  * Set LEDs status variables according to Flash register (FLASH_ADDR_LEDS)
  */
 void leds_get_flash_status (void) {
-	/*
-	uint8_t *ptr_leds_status;
-	uint8_t leds_status[1] = { 0x00 };
-
-	ptr_leds_status = (uint8_t*)(FLASH_ADDR_LEDS);
-	leds_status[0] = *ptr_leds_status;
-	leds_running = (leds_status[0] & 0x08) ? false : true;
-	leds_on = (leds_running == true) ? leds_status[0] & 0x0F : 0x00;
-	*/
 	uint8_t dest_array[11] = { 0 };
 	
 	flash_read_array(0x00018000, dest_array, 11);

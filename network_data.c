@@ -5,15 +5,23 @@
 
 
 
-uint8_t net_mac_address	[6];
-uint8_t net_ip_address	[4];
-
+/* Extern Declarations */
 
 extern  LOCALM localm[];
 #define LocM   localm[NETIF_ETH]
 
 
+/* Definitions */
 
+
+uint8_t net_mac_address	[6];
+uint8_t net_ip_address	[4];
+
+
+
+/**
+ * @brief		Writes MAC & IP addresses into global variables
+ */
 void get_network_data () {
 	uint32_t sa_value;
 	

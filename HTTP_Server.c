@@ -88,9 +88,6 @@ int main (void) {
 
 	/* RTOS threads initialization */
 	init_threads();
-	
-	/* Write network data into flash */
-	// flash_write_data();
 
 	/* Run program */
   while(1) {

@@ -25,7 +25,6 @@
 extern  LOCALM localm[];
 #define LocM   localm[NETIF_ETH]
 
-
 // Net_Config.c
 extern struct tcp_cfg   tcp_config;
 extern struct http_cfg  http_config;
@@ -34,6 +33,9 @@ extern struct http_cfg  http_config;
 #define http_EnAuth     http_config.EnAuth
 #define http_auth_passw http_config.Passw
 
+
+
+/* Extern application declarations */
 
 extern bool leds_running;
 extern bool led2_blink;
@@ -54,12 +56,14 @@ extern char str_time_sntp[50];
 extern char str_time_rtc[50];
 
 
-// My structure of CGI status variable.
+
+// Structure of CGI status variable.
 typedef struct {
   uint16_t xcnt;
   uint16_t unused;
 } MY_BUF;
 #define MYBUF(p)        ((MY_BUF *)p)
+
 
 
 // Process query string received by GET request.
@@ -95,6 +99,8 @@ void cgi_process_query (const char *qstr) {
     }
   } while (qstr);
 }
+
+
 
 // Process data received by POST request.
 // Type code: - 0 = www-url-encoded form data.
@@ -195,6 +201,8 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
 		osSignalSet(id_thread_flash, 0x01);
 	}		
 }
+
+
 
 // Generate dynamic web data from a script line.
 uint32_t cgi_script (const char *env, char *buf, uint32_t buflen, uint32_t *pcgi) {

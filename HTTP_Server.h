@@ -16,6 +16,12 @@
 #define PIN_LED2 		21
 #define PIN_LED3 		23
 
+/* Flash interfacing related constants */
+#define FLASH_SECTOR_11_START  	0x00018000	/* Starting position for sector 0x11 */
+#define FLASH_4KB_SECTOR_SIZE		0x00001000	/* Sectors 0x00 through 0x0F */
+#define FLASH_32KB_SECTOR_SIZE	0x00008000	/* Sectors 0x10 through 0x1D */
+#define FLASH_WRITE_SIZE     		0x0B				/* Application Write Size */
+
 /* RTC reset values (center-joystick button) */
 #define INIT_DATE_SEC 		55
 #define INIT_DATE_MIN 		00
@@ -26,6 +32,9 @@
 
 /* RTC interrupt register configuration: every minute */
 #define RTC_CIIR_CONFIG   	0x00000002
+
+/* UTC Timezone adjustment from GMT */
+#define UTC_GMT_PLUS2   		7200
 
 /* Strings and misc */
 #define CLEAR_STRING "                        "
@@ -137,10 +146,9 @@ typedef struct {
 extern uint8_t net_mac_address	[6];
 extern uint8_t net_ip_address		[4];
 
-void flash_write_data						(void);
 void flash_get_sector_range			(FlashAddressRange *address_range, FlashSectorRange *sector_range);
-void flash_erase_sector					 (int start, int end);
-void flash_write_array					(uint32_t address_start, uint8_t *array);
-void flash_read_array						(uint32_t address, uint8_t *dest, int size);
-void flash_write_byte						(uint32_t byte_address, uint8_t value);
-void flash_write_bytes_tuple		(uint32_t start_write_address, uint8_t values[], uint8_t size);
+void flash_erase_sector					(int sector_start, int sector_end);
+void flash_read_array						(uint32_t address_start, uint8_t *dest_array, int size);
+void flash_overwrite_array			(uint32_t address_start, uint8_t *src_array);
+void flash_write_byte						(uint32_t address, uint8_t value);
+void flash_write_array					(uint32_t start_write_address, uint8_t src_array[], uint8_t size);
