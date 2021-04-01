@@ -398,11 +398,6 @@
               <FilePath>Web\Web.c</FilePath>
             </File>
             <File>
-              <FileName>Hardware.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware.c</FilePath>
-            </File>
-            <File>
               <FileName>HTTP_Server.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\HTTP_Server.h</FilePath>
@@ -453,6 +448,11 @@
               <FilePath>.\hardware_lcd.c</FilePath>
             </File>
             <File>
+              <FileName>hardware_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_rgb.c</FilePath>
+            </File>
+            <File>
               <FileName>flash_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\flash_interface.c</FilePath>
@@ -461,6 +461,16 @@
               <FileName>network_data.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\network_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_joystick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_joystick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1003,11 +1013,6 @@
               <FilePath>Web\Web.c</FilePath>
             </File>
             <File>
-              <FileName>Hardware.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware.c</FilePath>
-            </File>
-            <File>
               <FileName>HTTP_Server.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\HTTP_Server.h</FilePath>
@@ -1058,6 +1063,11 @@
               <FilePath>.\hardware_lcd.c</FilePath>
             </File>
             <File>
+              <FileName>hardware_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_rgb.c</FilePath>
+            </File>
+            <File>
               <FileName>flash_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\flash_interface.c</FilePath>
@@ -1066,6 +1076,16 @@
               <FileName>network_data.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\network_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_joystick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\hardware_joystick.c</FilePath>
             </File>
           </Files>
         </Group>

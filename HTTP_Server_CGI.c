@@ -135,19 +135,15 @@ void cgi_process_data (uint8_t code, const char *data, uint32_t len) {
       // First character is non-null, string exists
       if (strcmp (var, "led0=on") == 0) {
         leds_on |= 0x01;
-				write_leds_status = true;
       }
       else if (strcmp (var, "led1=on") == 0) {
         leds_on |= 0x02;
-				write_leds_status = true;
       }
       else if (strcmp (var, "led2=on") == 0) {
         leds_on |= 0x04;
-				write_leds_status = true;
       }
       else if (strcmp (var, "led3=on") == 0) {
         leds_on |= 0x08;
-				write_leds_status = true;
       }
 			else if (strncmp (var, "ctrl=Running", 10) == 0) {
         leds_running = true;

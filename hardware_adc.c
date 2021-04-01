@@ -1,8 +1,4 @@
-#include "GPIO_LPC17xx.h"
-#include "PIN_LPC17xx.h"
 #include "LPC17xx.h"
-
-#include "rtc.h"
 
 #include "HTTP_Server.h"
 
@@ -34,33 +30,7 @@ uint16_t adc_read(void) {
 	buffer_adc_sensor = (LPC_ADC->ADGDR & (0xFFF << 4)) >> 4;
 	LPC_ADC->ADCR &= ~(1UL << 24);
 	
-	return buffer_adc_sensor;
-}
-
-
-
-
-
-
-/**
- * Configure the Joystick to trigger interrupts upon center-key press
- */
-void joystick_initialize(void) {
-	PIN_Configure(PORT_PINS, PIN_JST_C, PIN_FUNC_0, PIN_PINMODE_PULLDOWN, PIN_PINMODE_NORMAL);
-
-	LPC_GPIOINT->IO0IntEnR |= (1UL << PIN_JST_C);
-
-	NVIC_EnableIRQ(EINT3_IRQn);
-}
-
-
-/**
- * GPIO ISR (Joystick Center press): Resets time to default date upon
- */
-void EINT3_IRQHandler() {
+	rgb_set_status(buffer_adc_sensor);
 	
-	if (LPC_GPIOINT->IO0IntStatR & (1 << PIN_JST_C)) {
-		rtc_reset_full_time();
-  }
-	LPC_GPIOINT->IO0IntClr |= (1 << PIN_JST_C);
+	return buffer_adc_sensor;
 }

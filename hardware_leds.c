@@ -69,7 +69,7 @@ void leds_get_flash_status (void) {
 	flash_read_array(0x00018000, dest_array, 11);
 
 	leds_running = (dest_array[10] & 0x10) ? false : true;
-	leds_on = dest_array[10] & 0x0F; // (leds_running == false) ? dest_array[10] & 0x0F : 0x00;
+	leds_on = dest_array[10] & 0x0F;
 }
 
 

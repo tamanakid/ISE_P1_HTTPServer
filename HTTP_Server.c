@@ -82,6 +82,7 @@ int main (void) {
 	lcd_initialize();
 	adc_initialize();
 	joystick_initialize();
+	rgb_initialize();
 
 	/* RTC initialization */
 	rtc_initialize(RTC_CIIR_CONFIG);

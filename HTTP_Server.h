@@ -16,11 +16,19 @@
 #define PIN_LED2 		21
 #define PIN_LED3 		23
 
+/* AppBoard RGB LED Constants */
+#define PORT_RGB        2
+#define PIN_RED         3
+#define PIN_GREEN       2
+#define PIN_BLUE        1
+
 /* Flash interfacing related constants */
-#define FLASH_SECTOR_11_START  	0x00018000	/* Starting position for sector 0x11 */
-#define FLASH_4KB_SECTOR_SIZE		0x00001000	/* Sectors 0x00 through 0x0F */
-#define FLASH_32KB_SECTOR_SIZE	0x00008000	/* Sectors 0x10 through 0x1D */
-#define FLASH_WRITE_SIZE     		0x0B				/* Application Write Size */
+#define FLASH_SECTOR_11_START  		0x00018000	/* Starting position for sector 0x11 */
+#define FLASH_4KB_SECTOR_SIZE			0x00001000	/* Sectors 0x00 through 0x0F */
+#define FLASH_32KB_SECTOR_SIZE		0x00008000	/* Sectors 0x10 through 0x1D */
+#define FLASH_WRITE_SIZE     			12					/* Application Write Size */
+
+#define FLASH_ADDR_RGB_THRESHOLD  0x0001800B	/* Flash address for RGB Threshold value */
 
 /* RTC reset values (center-joystick button) */
 #define INIT_DATE_SEC 		55
@@ -35,6 +43,9 @@
 
 /* UTC Timezone adjustment from GMT */
 #define UTC_GMT_PLUS2   		7200
+
+/* ADC Threshold for RGB LED */
+#define ADC_THRESHOLD   		0x7F
 
 /* Strings and misc */
 #define CLEAR_STRING "                        "
@@ -116,6 +127,15 @@ extern char str_time_rtc[50];
 
 static void sntp_response_callback (uint32_t timestamp);
 uint32_t read_time_strings(const char *env, char *buf, char *str);
+
+
+
+/**
+ * Defined in hardware_rgb.c
+ */
+void 		rgb_initialize 					(void);
+void 		rgb_set_status					(uint16_t adc_value);
+uint8_t rgb_get_flash_threshold (void);
 
 
 

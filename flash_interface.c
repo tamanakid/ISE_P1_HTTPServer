@@ -42,6 +42,9 @@ void thread_flash (void const *argument) {
 		flash_buffer[0x0A] = leds_running == false ? 0x10 : 0x00;
 		flash_buffer[0x0A] = flash_buffer[0x0A] | leds_on;
 		
+		/* ADC Threshold */
+		flash_buffer[0x0B] = ADC_THRESHOLD;
+		
 		/* Write array into flash */
 		flash_write_array(FLASH_SECTOR_11_START, flash_buffer, FLASH_WRITE_SIZE);
 		// flash_overwrite_array (FLASH_SECTOR_11_START, flash_buffer);
